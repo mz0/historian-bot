@@ -1,0 +1,34 @@
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+/.npm/
+
+# Environment variables
+/.env
+
+# Database file
+/messages.db
+/*.sqlite
+/*.sqlite3
+
+# Logs
+/logs/
+/*.log
+
+# Build artifacts
+/dist/
+/build/
+
+/.vscode/
+/.idea/
+
+# Runtime generated files
+*.pid
+*.seed
+*.lock
+
+# Temporary files
+*.tmp
+*.temp

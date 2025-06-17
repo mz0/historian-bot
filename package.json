@@ -1,0 +1,35 @@
+{
+  "name": "historian-bot",
+  "version": "0.0.1",
+  "description": "A Telegram bot: receives updates on a reverse proxied port, saves them to SQLite",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "jest --detectOpenHandles --forceExit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mz0/historian-bot.git"
+  },
+  "keywords": [
+    "Telegram",
+    "Bot",
+    "trivial"
+  ],
+  "author": "Mark Zhitomirski",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mz0/historian-bot/issues"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "better-sqlite3": "^11.10.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.0.0",
+    "supertest": "^7.1.1"
+  },
+  "homepage": "https://github.com/mz0/historian-bot#readme"
+}
