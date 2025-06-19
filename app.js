@@ -26,15 +26,15 @@ app.use(express.json());
 
 // --- SQLite Database Setup ---
 // We make DB_PATH accessible externally for testing purposes
-const DB_PATH = path.resolve(__dirname, 'messages.db');
+const MSG_DB_PATH = path.resolve(__dirname, 'messages.db');
 let db; // This will hold our better-sqlite3 database instance
 
 // Function to initialize the database
-function initializeDb() {
+function appInit(dbPath = MSG_DB_PATH) {
     try {
         // Open the database connection synchronously
         // Adding { verbose: console.log } can help debug queries in dev
-        db = new Database(DB_PATH, { verbose: process.env.NODE_ENV === 'development' ? console.log : null });
+        db = new Database(MSG_DB_PATH, { verbose: process.env.NODE_ENV === 'development' ? console.log : null });
         console.log('Connected to the SQLite database using better-sqlite3.');
 
         // Run the CREATE TABLE command synchronously
@@ -56,6 +56,10 @@ function initializeDb() {
     } catch (err) {
         console.error("Error initializing SQLite database:", err.message);
         throw err; // Re-throw to indicate a critical setup failure
+    }
+    // Set the Telegram webhook once. Skip in test.
+    if (dbPath === MSG_DB_PATH) {
+-       setTelegramWebhook();
     }
 }
 
@@ -119,8 +123,7 @@ function saveMessageToDb(update) { // No longer async, as better-sqlite3 is sync
     }
 }
 
-// --- Helper function to delete a message by update_id ---
-function deleteMessageFromDb(updateId) { // No longer async
+function deleteMessageFromDb(updateId) {
     const deleteStmt = db.prepare(`DELETE FROM telegram_channel_posts WHERE update_id = ?`);
     try {
         const info = deleteStmt.run(updateId);
@@ -132,8 +135,7 @@ function deleteMessageFromDb(updateId) { // No longer async
     }
 }
 
-// --- Helper function to get a message by update_id ---
-function getMessageByUpdateId(updateId) { // No longer async
+function getMessageByUpdateId(updateId) {
     const selectStmt = db.prepare(`SELECT * FROM telegram_channel_posts WHERE update_id = ?`);
     try {
         return selectStmt.get(updateId); // Returns row object or undefined
@@ -142,7 +144,6 @@ function getMessageByUpdateId(updateId) { // No longer async
         throw err;
     }
 }
-
 
 // --- Webhook Endpoint ---
 app.post(WEBHOOK_PATH, (req, res) => { // Now sync handler, but async logic is possible inside
@@ -168,7 +169,6 @@ app.get('/health', (req, res) => {
     res.status(200).send('Bot webhook server is running');
 });
 
-// --- Function to Set Webhook with Telegram ---
 async function setTelegramWebhook() {
     try {
         const response = await axios.post(`${TELEGRAM_API_BASE_URL}/setWebhook`, {
@@ -191,16 +191,14 @@ async function setTelegramWebhook() {
     }
 }
 
-// --- Export the functions and app for testing and external startup ---
 module.exports = {
     app,
-    initializeDb,
-    saveMessageToDb,
+    appInit,
+    setTelegramWebhook,
+    closeDb,
+    // for tests:
     deleteMessageFromDb,
     getMessageByUpdateId,
-    setTelegramWebhook,
-    // for tests:
-    closeDb,
-    WEBHOOK_PATH,
-    DB_PATH
+    saveMessageToDb,
+    WEBHOOK_PATH
 };
