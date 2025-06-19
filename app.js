@@ -33,9 +33,9 @@ let db; // This will hold our better-sqlite3 database instance
 function appInit(dbPath = MSG_DB_PATH) {
     try {
         // Open the database connection synchronously
-        // Adding { verbose: console.log } can help debug queries in dev
+        // Add { verbose: console.log } to print SQL queries
         db = new Database(dbPath, { verbose: process.env.NODE_ENV === 'development' ? console.log : null });
-        console.log('Connected to the SQLite database using better-sqlite3.');
+        console.log(`SQLite database ${dbPath} connect Ok`);
 
         // Run the CREATE TABLE command synchronously
         db.exec(`

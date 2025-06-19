@@ -30,7 +30,7 @@ describe('Telegram Webhook Bot DB Integration Test', () => {
         // Clean up the test database file
         if (fs.existsSync(TEST_DB_PATH)) { // Using the main DB_PATH
             fs.unlinkSync(TEST_DB_PATH);
-            console.log(`Deleted test database file: ${DB_PATH}`);
+            console.log(`Deleted test database file: ${TEST_DB_PATH}`);
         }
     });
 
