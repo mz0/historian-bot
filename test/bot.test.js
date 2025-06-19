@@ -1,6 +1,8 @@
-const request = require('supertest'); // Used to make HTTP requests to your Express app
+const request = require('supertest'); // make HTTP requests to Express app
 const fs = require('fs'); // For file system operations
-const { app, initializeDb, closeDb, getMessageByUpdateId, DB_PATH, WEBHOOK_PATH } = require('../app'); // Import components from app.js
+const path = require('path');
+const { app, initializeDb, closeDb, deleteMessageFromDb, getMessageByUpdateId,
+    DB_PATH, WEBHOOK_PATH } = require('../app');
 
 describe('Telegram Webhook Bot DB Integration Test', () => {
     let server; // To hold the Express server instance
