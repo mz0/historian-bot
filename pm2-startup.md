@@ -47,3 +47,9 @@ curl -X POST \
 Links:
 * [PM2 Quick start](https://pm2.keymetrics.io/docs/usage/quick-start/)
 * [Run a Daemon](https://pm2.keymetrics.io/docs/usage/startup/)
+
+TODO
+* `pm2 reload` - Zero-Downtime Reloads
+* `pm2 monit` - real-time, terminal-based monitoring dashboard
+* `pm2 deploy` - deployment hooks in ecosystem.config.js ?
+* `max_memory_restart` - mitigate memleaks
