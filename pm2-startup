@@ -1,0 +1,42 @@
+```
+pm2 startup
+[PM2] Init System found: systemd
+[PM2] To setup the Startup Script, copy/paste the following command: sudo ...
+
+export P0=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin
+sudo env PATH=$P0 /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u mz0 --hp /home/mz0
+
+pm2 start bot.js
+
+ss -lnp |grep 3000
+tcp   LISTEN 0	511	*:3000
+
+
+```
+Freeze a process list on reboot: `pm2 save`
+Status: `pm2 status`
+```
+┌────┬──────┬──────┬───┬────────┬─────┬────────┐
+│ id │ name │ mode │ ↺ │ status │ cpu │ memory │
+├────┼──────┼──────┼───┼────────┼─────┼────────┤
+│ 0  │ bot  │ fork │ 0 │ online │ 0%  │ 67.9mb │
+└────┴──────┴──────┴───┴────────┴─────┴────────┘
+```
+Stop: `pm2 stop bot`
+Remove init script: `pm2 unstartup systemd`
+
+
+TODO command like this:
+```
+curl -X POST \
+   -H "Content-Type: application/json" \
+   -d '{"update_id": 1234567890,
+  "chat": {"id": 434},
+  "message_id": 42,
+  "date": "2043-06-11T12:00:43Z",
+  "text": "test TEXT",
+  "caption": "Boo Capt",
+  "file_id": null,
+  "file_type": null}'  \
+   https://wdr.x320.net/historian/bot1
+```
