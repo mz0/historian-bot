@@ -8,8 +8,10 @@ sudo env PATH=$P0 /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u mz0 --hp 
 
 pm2 start bot.js
 
-ss -lnp |grep 3000
-tcp   LISTEN 0	511	*:3000
+ss -lnp |grep 9000
+
+Netid	State  Recv-Q Send-Q  l-address:Port  Process
+tcp	LISTEN	    0	 511          *:9000  users:(("node /home/mz0/",pid=1234,fd=22))
 
 
 ```
@@ -22,6 +24,7 @@ Status: `pm2 status`
 │ 0  │ bot  │ fork │ 0 │ online │ 0%  │ 67.9mb │
 └────┴──────┴──────┴───┴────────┴─────┴────────┘
 ```
+Logs: `pm2 logs`
 Stop: `pm2 stop bot`
 Remove init script: `pm2 unstartup systemd`
 
@@ -40,3 +43,7 @@ curl -X POST \
   "file_type": null}'  \
    https://wdr.x320.net/historian/bot1
 ```
+
+Links:
+* [PM2 Quick start](https://pm2.keymetrics.io/docs/usage/quick-start/)
+* [Run a Daemon](https://pm2.keymetrics.io/docs/usage/startup/)
