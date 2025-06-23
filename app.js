@@ -7,15 +7,15 @@ const fs = require('fs'); // For file system operations, like deleting the DB fi
 
 // --- Configuration ---
 const BOT_TOKEN = process.env.BOT_TOKEN;
-const WEBHOOK_DOMAIN = process.env.WEBHOOK_DOMAIN;
-const WEBHOOK_PATH = process.env.WEBHOOK_PATH;
+const WEBHOOK_BASE = process.env.WEBHOOK_BASE;
+const ENDPOINT = process.env.ENDPOINT;
 const PORT = process.env.PORT || 3000;
 
-const WEBHOOK_URL = `https://${WEBHOOK_DOMAIN}${WEBHOOK_PATH}`;
+const WEBHOOK_URL = `https://${WEBHOOK_BASE}${ENDPOINT}`;
 const TELEGRAM_API_BASE_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
-if (!BOT_TOKEN || !WEBHOOK_DOMAIN || !WEBHOOK_PATH) {
-    console.error("Error: BOT_TOKEN, WEBHOOK_DOMAIN, or WEBHOOK_PATH is not set in .env file.");
+if (!BOT_TOKEN || !WEBHOOK_BASE || !ENDPOINT) {
+    console.error("Error: BOT_TOKEN, WEBHOOK_BASE, or ENDPOINT is not set in .env file.");
     // In a production app, you might want to exit here. For testing, it might be handled differently.
     // process.exit(1);
 }
@@ -146,7 +146,7 @@ function getMessageByUpdateId(updateId) {
 }
 
 // --- Webhook Endpoint ---
-app.post(WEBHOOK_PATH, (req, res) => { // Now sync handler, but async logic is possible inside
+app.post(ENDPOINT, (req, res) => { // Now sync handler, but async logic is possible inside
     const update = req.body;
 
     if (update && update.channel_post) {
@@ -185,7 +185,7 @@ async function setTelegramWebhook() {
         if (e.response && e.response.data && e.response.data.description) {
             console.error("Telegram API response error:", e.response.data.description);
             if (e.response.data.description.includes('wrong url host') || e.response.data.description.includes('SSL error')) {
-                console.error("Please double-check your WEBHOOK_DOMAIN, WEBHOOK_PATH, and Nginx SSL configuration.");
+                console.error("Please double-check your WEBHOOK_BASE, ENDPOINT, and Nginx SSL configuration.");
             }
         }
     }
@@ -200,5 +200,5 @@ module.exports = {
     deleteMessageFromDb,
     getMessageByUpdateId,
     saveMessageToDb,
-    WEBHOOK_PATH
+    ENDPOINT
 };

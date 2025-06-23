@@ -4,7 +4,7 @@ async function startApplication() {
     await appInit();
     const server = app.listen(process.env.PORT || 3000, async () => {
         console.log(`Express server listening on internal port ${process.env.PORT || 3000}`);
-        console.log(`Publicly exposed Webhook URL: https://${process.env.WEBHOOK_DOMAIN}${process.env.WEBHOOK_PATH}`);
+        console.log(`Publicly exposed Webhook URL: https://${process.env.WEBHOOK_BASE}${process.env.ENDPOINT}`);
     });
 
     // Handle graceful shutdown

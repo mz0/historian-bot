@@ -1,7 +1,7 @@
 const request = require('supertest'); // make HTTP requests to Express app
 const fs = require('fs'); // For file system operations
 const path = require('path');
-const { app, appInit, deleteMessageFromDb, getMessageByUpdateId, closeDb, WEBHOOK_PATH } = require('../app');
+const { app, appInit, deleteMessageFromDb, getMessageByUpdateId, closeDb, ENDPOINT } = require('../app');
 
 describe('Telegram Webhook Bot DB Integration Test', () => {
     let server; // To hold the Express server instance
@@ -55,9 +55,9 @@ describe('Telegram Webhook Bot DB Integration Test', () => {
         };
 
         // 1. Simulate Telegram sending a webhook POST request
-        console.log(`[TEST STEP 1] Sending mock webhook to ${WEBHOOK_PATH} for update_id: ${testUpdateId}`);
+        console.log(`[TEST STEP 1] Sending mock webhook to ${ENDPOINT} for update_id: ${testUpdateId}`);
         const webhookResponse = await request(app)
-            .post(WEBHOOK_PATH) // Use the actual webhook path
+            .post(ENDPOINT) // Use the actual webhook path
             .send(mockUpdate)
             .expect(200); // Telegram expects a 200 OK response
 
