@@ -23,6 +23,6 @@ app.listen(port, () => {
 /* Check proxied endpoint (add -k if no full-chain certificate received):
  curl -X POST \
    -H "Content-Type: application/json" \
-   -d '{"name": "Alice", "status": "active", "id": 123}'  \
-   https://wdr.x320.net/historian/
+   -d '{"update_id": 1234, "message": {"active": true, "foo": "bar", "baz": 3.14159265}}'  \
+   https://bothost.example.com/proxied-path/endpoint-foo
 */

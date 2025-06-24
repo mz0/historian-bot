@@ -8,13 +8,13 @@ const fs = require('fs'); // For file system operations, like deleting the DB fi
 // --- Configuration ---
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const WEBHOOK_BASE = process.env.WEBHOOK_BASE;
-const ENDPOINT = process.env.ENDPOINT;
+const ENDPOINT = process.env.ENDPOINT || '/foo';
 const PORT = process.env.PORT || 3000;
 
 const WEBHOOK_URL = `https://${WEBHOOK_BASE}${ENDPOINT}`;
 const TELEGRAM_API_BASE_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
-if (!BOT_TOKEN || !WEBHOOK_BASE || !ENDPOINT) {
+if (!BOT_TOKEN || !WEBHOOK_BASE) {
     console.error("Error: BOT_TOKEN, WEBHOOK_BASE, or ENDPOINT is not set in .env file.");
     // In a production app, you might want to exit here. For testing, it might be handled differently.
     // process.exit(1);
@@ -78,8 +78,9 @@ function closeDb() {
 
 // --- Helper function to save a message ---
 function saveMessageToDb(update) { // No longer async, as better-sqlite3 is synchronous
-    const channelPost = update.channel_post;
     const fullJson = JSON.stringify(update);
+  /*
+    const channelPost = update.channel_post;
     const chat_id = channelPost.chat.id;
     const message_id = channelPost.message_id;
     const date = new Date(channelPost.date * 1000).toISOString();
@@ -102,14 +103,14 @@ function saveMessageToDb(update) { // No longer async, as better-sqlite3 is sync
         file_id = channelPost.audio.file_id;
         file_type = 'audio';
     }
-
+  */
     const insertStmt = db.prepare(`
-        INSERT INTO telegram_channel_posts (update_id, chat_id, message_id, date, text, caption, file_id, file_type, full_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO telegram_channel_posts (update_id, full_json)
+        VALUES (?, ?)
     `);
 
     try {
-        const info = insertStmt.run(update.update_id, chat_id, message_id, date, text, caption, file_id, file_type, fullJson);
+        const info = insertStmt.run(update.update_id, fullJson);
         // console.log(`[DB SAVE] Message saved to DB with row ID: ${info.lastInsertRowid}`);
         return info.lastInsertRowid;
     } catch (err) {
@@ -148,17 +149,16 @@ function getMessageByUpdateId(updateId) {
 // --- Webhook Endpoint ---
 app.post(ENDPOINT, (req, res) => { // Now sync handler, but async logic is possible inside
     const update = req.body;
-
-    if (update && update.channel_post) {
-        console.log(`[REAL WEBHOOK] Received channel post. Update ID: ${update.update_id}`);
+    if (update && update.update_id) {
+        console.log(`[BOT1] Received channel post. Update ID: ${update.update_id}`);
         try {
             saveMessageToDb(update); // Call the synchronous save function
         } catch (e) {
-            console.error(`[REAL WEBHOOK] Error processing webhook and saving message: ${e.message}`);
+            console.error(`[BOT1] Error processing webhook and saving message: ${e.message}`);
             // Depending on the error, you might log it more severely or trigger alerts
         }
     } else {
-        console.log("[REAL WEBHOOK] Received a non-channel_post update type or invalid update.");
+        console.log("[BOT1] Received invalid update.");
     }
 
     res.sendStatus(200); // Always send a 200 OK response to Telegram

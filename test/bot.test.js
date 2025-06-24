@@ -69,7 +69,7 @@ describe('Telegram Webhook Bot DB Integration Test', () => {
         let savedMessage = await getMessageByUpdateId(testUpdateId);
         expect(savedMessage).toBeDefined();
         expect(savedMessage.update_id).toBe(testUpdateId);
-        expect(savedMessage.text).toBe(testMessageText);
+        expect(savedMessage.full_json).toBe(JSON.stringify(mockUpdate));
         console.log(`[TEST STEP 2] Message verified in DB: ${savedMessage.text}`);
 
         // 3. Delete it from DB
